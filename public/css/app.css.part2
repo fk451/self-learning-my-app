@@ -1,0 +1,730 @@
+/* ============================================================
+   (Bu kısım app.css dosyasının devamıdır, birleştirin)
+   ============================================================ */
+
+.result-correct .result-value { color: var(--success); }
+.result-wrong .result-value { color: var(--danger); }
+.result-accuracy .result-value { color: var(--accent); }
+.result-time .result-value { color: var(--warning); }
+
+.skipped-note {
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.results-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   KELİME DETAY
+   ============================================================ */
+
+.detail-hero {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+
+.detail-word {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.detail-phonetic {
+  font-size: 1.1rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.detail-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.detail-stat {
+  text-align: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+}
+
+.detail-stat-value {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.detail-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.detail-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.detail-dates strong { color: var(--text-primary); }
+
+@media (max-width: 480px) {
+  .detail-dates { grid-template-columns: 1fr; }
+}
+
+.detail-section { margin-bottom: 16px; }
+
+.section-word {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.detail-pos-group { margin-bottom: 16px; }
+
+.detail-sense {
+  margin-bottom: 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent-light);
+}
+
+.sense-def {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.frequency-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--info-bg);
+  color: var(--info);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.translation-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.example-list { margin-top: 8px; }
+
+.example-item {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding-left: 12px;
+  border-left: 2px solid var(--border-color);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.sentence-example {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.source-link {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--accent);
+  word-break: break-all;
+}
+
+/* Review Geçmiş Tablosu */
+.review-history-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.data-table tr:hover td { background: var(--bg-hover); }
+
+.row-correct td:nth-child(3) { color: var(--success); }
+.row-wrong td:nth-child(3) { color: var(--danger); }
+
+.clickable-row { cursor: pointer; }
+.clickable-row:hover td { background: var(--bg-hover); }
+
+.pos-table-container,
+.leech-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.text-danger { color: var(--danger) !important; font-weight: 700; }
+
+/* ============================================================
+   KELİME EKLEME FORMU
+   ============================================================ */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-header h1 { font-size: 1.4rem; }
+
+.section-block {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--bg-tertiary);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.section-word-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.pos-group-block {
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--bg-secondary);
+}
+
+.pos-group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pos-select {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.senses-container { margin-bottom: 8px; }
+
+.sense-block {
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.sense-block textarea,
+.sense-block input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+  margin-bottom: 8px;
+  resize: vertical;
+}
+
+.sense-block textarea:focus,
+.sense-block input:focus {
+  border-color: var(--accent);
+}
+
+.sense-examples-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sense-example-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.sentence-block {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sentence-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.btn-danger.btn-ghost { color: var(--danger); }
+.btn-danger.btn-ghost:hover { background: var(--danger-bg); }
+
+/* ============================================================
+   FİLTRELER
+   ============================================================ */
+
+.filters-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-box { flex: 1; min-width: 200px; }
+
+/* ============================================================
+   SAYFALAMA
+   ============================================================ */
+
+.pagination { margin-top: 20px; }
+
+.pagination-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.pagination-info {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+
+.theme-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.theme-btn {
+  flex: 1;
+  padding: 14px;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: all var(--transition);
+  text-align: center;
+}
+
+.theme-btn:hover { border-color: var(--accent); }
+.theme-btn.active { border-color: var(--accent); background: var(--accent-light); }
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.schedule-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.schedule-time { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.schedule-type { font-size: 0.8rem; color: var(--text-tertiary); }
+.schedule-days { font-size: 0.8rem; color: var(--text-secondary); }
+.schedule-via { font-size: 0.75rem; color: var(--accent); }
+
+.schedule-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notif-permission-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.permission-status {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.data-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   EMPTY STATE & LOADER
+   ============================================================ */
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon { font-size: 4rem; margin-bottom: 16px; }
+.empty-state h2 { font-size: 1.4rem; margin-bottom: 8px; }
+.empty-state p { color: var(--text-tertiary); margin-bottom: 24px; }
+.empty-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.empty-state-inline {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-tertiary);
+  grid-column: 1 / -1;
+}
+
+.empty-text { color: var(--text-tertiary); font-style: italic; }
+
+.error-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.error-icon { font-size: 4rem; margin-bottom: 16px; }
+.error-text { color: var(--danger); }
+
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.toast-container {
+  position: fixed;
+  top: calc(var(--navbar-height) + 12px);
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 380px;
+  width: calc(100% - 32px);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.85rem;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.toast-show { opacity: 1; transform: translateX(0); }
+.toast-hide { opacity: 0; transform: translateX(100%); }
+
+.toast-success { border-left: 4px solid var(--success); }
+.toast-error { border-left: 4px solid var(--danger); }
+.toast-warning { border-left: 4px solid var(--warning); }
+.toast-info { border-left: 4px solid var(--info); }
+
+.toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+.toast-message { flex: 1; color: var(--text-primary); }
+
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  max-width: 480px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title { font-size: 1.1rem; font-weight: 700; }
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  padding: 4px;
+}
+
+.modal-body { padding: 24px; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================================================
+   PWA INSTALL BANNER
+   ============================================================ */
+
+.install-banner {
+  position: fixed;
+  bottom: calc(var(--bottom-nav-height) + 12px);
+  left: 16px;
+  right: 16px;
+  background: var(--accent);
+  color: white;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 90;
+  font-size: 0.9rem;
+  font-weight: 500;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.install-banner .btn-primary {
+  background: white;
+  color: var(--accent);
+}
+
+.install-banner .btn-ghost {
+  color: rgba(255,255,255,0.8);
+  padding: 4px 8px;
+}
+
+@media (min-width: 769px) {
+  .install-banner {
+    bottom: 20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    max-width: 500px;
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   YARDIMCI SINIFLAR
+   ============================================================ */
+
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-tertiary); }
+.mb-0 { margin-bottom: 0; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mt-16 { margin-top: 16px; }
+
+/* ============================================================
+   MOBİL UYUMLAMALAR
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .page { padding: 16px 12px; }
+  .page-header h1 { font-size: 1.2rem; }
+  .dashboard-welcome h1 { font-size: 1.2rem; }
+
+  .quick-actions { grid-template-columns: 1fr; }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-stats { grid-template-columns: repeat(3, 1fr); }
+
+  .words-grid { grid-template-columns: 1fr; }
+
+  .review-word { font-size: 1.8rem; }
+  .review-actions { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+
+  .auth-card { padding: 28px 20px; }
+
+  .mastery-chart-container { flex-direction: column; align-items: center; }
+
+  .results-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .result-value { font-size: 1.5rem; }
+
+  .filters-bar { flex-direction: column; }
+  .search-box { min-width: 100%; }
+
+  .data-table { font-size: 0.7rem; }
+  .data-table th, .data-table td { padding: 6px 8px; }
+
+  .theme-selector { flex-direction: column; }
+}
+
+/* ─── Tablet ─── */
+@media (min-width: 481px) and (max-width: 768px) {
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ─── Safe area (notch'lu telefonlar) ─── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  }
+
+  .main-content {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 16px);
+  }
+}
+
+/* ─── Print ─── */
+@media print {
+  .navbar, .bottom-nav, .toast-container, .modal-overlay, .install-banner { display: none !important; }
+  .main-content { padding-top: 0; padding-bottom: 0; }
+  body { background: white; color: black; }
+}
