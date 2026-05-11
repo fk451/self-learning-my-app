@@ -8,24 +8,19 @@ const ReviewPage = {
   isSubmitting: false,
 
   async render(container) {
-    // Loading göster
     container.innerHTML = '<div class="page-loader"><div class="spinner"></div></div>';
 
-    // Session tipini belirle
     const hash = window.location.hash;
     if (hash.includes('type=leech_drill')) this.sessionType = 'leech_drill';
     else this.sessionType = 'daily_review';
 
-    // State'i sıfırla
     this.currentIndex = 0;
     this.results = { correct: 0, wrong: 0, skipped: 0 };
     this.startTime = Date.now();
     this.isSubmitting = false;
 
     try {
-      // TEK İSTEK: Backend'den tüm kelimeleri ve detaylarını al
       const data = await API.getDueWords(this.sessionType);
-      
       if (!data || !data.words || data.words.length === 0) {
         container.innerHTML = `
           <div class="page review-page">
@@ -46,87 +41,43 @@ const ReviewPage = {
         return;
       }
 
-      // Backend'den gelen zenginleştirilmiş veriyi doğrudan kullan
-      // Artık N+1 HTTP isteğine gerek yok!
-      this.words = data.words.map(word => this.normalizeWordData(word));
+      this.words = data.words;
 
-      // Session başlat (istatistik için)
+      for (let i = 0; i < this.words.length; i++) {
+        try {
+          const detail = await API.getWord(this.words[i].id);
+          if (detail) this.words[i] = { ...this.words[i], ...detail };
+        } catch { /* mevcut veri ile devam */ }
+      }
+
       try {
         const session = await API.startSession({
           session_type: this.sessionType,
           total_cards: this.words.length
         });
-        if (session && session.sessionId) {
-          this.sessionId = session.sessionId;
-        }
-      } catch (err) {
-        console.warn('Session başlatılamadı, inceleme devam edecek:', err);
-      }
+        if (session) this.sessionId = session.sessionId;
+      } catch { /* Sessiz */ }
 
-      // İlk kartı göster
       this.showCard(container);
 
     } catch (err) {
-      console.error('Review başlatma hatası:', err);
       container.innerHTML = `
         <div class="page review-page">
           <div class="error-page">
             <div class="error-icon">⚠️</div>
             <h2>Hata</h2>
-            <p>${err.message || 'Kelimeler yüklenirken bir hata oluştu.'}</p>
-            <button class="btn btn-primary" onclick="ReviewPage.render(document.getElementById('main-content'))">
-              🔄 Tekrar Dene
-            </button>
-            <a href="#/dashboard" class="btn btn-secondary">🏠 Ana Sayfa</a>
+            <p>${err.message}</p>
+            <a href="#/dashboard" class="btn btn-primary">🏠 Ana Sayfa</a>
           </div>
         </div>
       `;
     }
   },
 
-  /**
-   * Backend'den gelen kelime verisini UI için normalize et
-   */
-  normalizeWordData(word) {
-    // Backend artık pos_groups, sections gibi alanları zaten döndüğü için
-    // sadece UI'ın beklediği formatta olduğundan emin oluyoruz
-    return {
-      id: word.id,
-      user_id: word.user_id,
-      word: word.word,
-      phonetic: word.phonetic || '',
-      
-      // SM-2 alanları
-      mastery_level: word.mastery_level || 'new',
-      ease_factor: word.ease_factor,
-      interval_days: word.interval_days,
-      repetition: word.repetition,
-      
-      // Detaylar (backend enrichment ile geliyor)
-      sections: word.sections || [],
-      pos_groups: word.pos_groups || [],
-      primary_translation: word.primary_translation || '',
-      primary_definition: word.primary_definition || '',
-      
-      // İstatistikler
-      total_reviews: word.total_reviews || 0,
-      correct_count: word.correct_count || 0,
-      wrong_count: word.wrong_count || 0,
-      streak: word.streak || 0,
-      best_streak: word.best_streak || 0,
-      lapse_count: word.lapse_count || 0,
-      
-      // Kaynak
-      source_url: word.source_url || '',
-      created_at: word.created_at
-    };
-  },
-
   showCard(container) {
     if (!container) container = document.getElementById('main-content');
     this.isSubmitting = false;
 
-    // Tüm kartlar bitti mi kontrol et
     if (this.currentIndex >= this.words.length) {
       this.showResults(container);
       return;
@@ -137,27 +88,16 @@ const ReviewPage = {
     container.innerHTML = `
       <div class="page review-page">
         <div class="review-header">
-          <button class="btn btn-ghost btn-sm" onclick="ReviewPage.confirmExit()">
-            ✕ Çık
-          </button>
+          <button class="btn btn-ghost btn-sm" onclick="ReviewPage.confirmExit()">✕ Çık</button>
           <span class="review-count">
             ${this.sessionType === 'leech_drill' ? '⚠️ Sorunlu' : '📖 Çalışma'}
-            • ${this.currentIndex + 1}/${this.words.length}
           </span>
-          <button class="btn btn-ghost btn-sm" onclick="ReviewPage.skipWord()">
-            Atla →
-          </button>
+          <button class="btn btn-ghost btn-sm" onclick="ReviewPage.skipWord()">Atla →</button>
         </div>
 
         ${ReviewCard.render(word, this.currentIndex, this.words.length)}
       </div>
     `;
-
-    // Kart animasyonu için
-    const cardContainer = document.querySelector('.review-card-container');
-    if (cardContainer) {
-      cardContainer.classList.add('card-enter');
-    }
   },
 
   async submitAnswer(remembered) {
@@ -173,14 +113,12 @@ const ReviewPage = {
     btns.forEach(b => {
       b.disabled = true;
       b.style.opacity = '0.5';
-      b.style.cursor = 'not-allowed';
     });
 
     // Seçilen butona görsel geri bildirim
     const selectedBtn = remembered
       ? document.querySelector('.review-btn-success')
       : document.querySelector('.review-btn-fail');
-    
     if (selectedBtn) {
       selectedBtn.style.opacity = '1';
       selectedBtn.style.transform = 'scale(1.05)';
@@ -189,14 +127,13 @@ const ReviewPage = {
 
     const quality = remembered ? 4 : 1;
 
-    // İstatistikleri güncelle
     if (remembered) {
       this.results.correct++;
     } else {
       this.results.wrong++;
     }
 
-    // API'ye review gönder (asenkron, beklemeden devam edebiliriz)
+    // API'ye gönder
     try {
       await API.submitReview({
         word_id: word.id,
@@ -204,18 +141,25 @@ const ReviewPage = {
         session_id: this.sessionId
       });
     } catch (err) {
-      console.error('Review gönderme hatası:', err);
-      // Hata olsa bile kullanıcı deneyimini etkileme
+      console.error('Review submit hatası:', err);
     }
 
-    // Kart üstünde kısa feedback göster
-    this.showFeedback(remembered);
+    // Sonuç göster — kart üstünde kısa feedback
+    const feedbackEl = document.createElement('div');
+    feedbackEl.className = `review-feedback ${remembered ? 'feedback-success' : 'feedback-fail'}`;
+    feedbackEl.innerHTML = remembered
+      ? '<span>✅ Hatırlandı!</span>'
+      : '<span>❌ Tekrar gelecek</span>';
 
-    // 1 saniye bekle - kullanıcı feedback'i görsün
+    const cardContainer = document.querySelector('.review-card-container');
+    if (cardContainer) {
+      cardContainer.parentElement.insertBefore(feedbackEl, cardContainer.nextSibling);
+    }
+
+    // 1 saniye bekle — kullanıcı feedback'i görsün
     await new Promise(r => setTimeout(r, 1000));
 
     // Kart çıkış animasyonu
-    const cardContainer = document.querySelector('.review-card-container');
     if (cardContainer) {
       cardContainer.classList.add(remembered ? 'card-exit-right' : 'card-exit-left');
     }
@@ -223,32 +167,12 @@ const ReviewPage = {
     const actionsEl = document.getElementById('review-actions');
     if (actionsEl) actionsEl.classList.add('actions-exit');
 
-    // Animasyon bitsin (350ms)
+    // Animasyon bitsin
     await new Promise(r => setTimeout(r, 350));
 
     // Sonraki kart
     this.currentIndex++;
     this.showCard();
-  },
-
-  /**
-   * Kullanıcıya kısa süreli feedback göster
-   */
-  showFeedback(remembered) {
-    // Varsa eski feedback'i kaldır
-    const oldFeedback = document.querySelector('.review-feedback');
-    if (oldFeedback) oldFeedback.remove();
-
-    const feedbackEl = document.createElement('div');
-    feedbackEl.className = `review-feedback ${remembered ? 'feedback-success' : 'feedback-fail'}`;
-    feedbackEl.innerHTML = remembered
-      ? '<span>✅ Hatırlandı!</span>'
-      : '<span>❌ Tekrar gözden geçir</span>';
-
-    const cardContainer = document.querySelector('.review-card-container');
-    if (cardContainer) {
-      cardContainer.parentElement.insertBefore(feedbackEl, cardContainer.nextSibling);
-    }
   },
 
   skipWord() {
@@ -268,7 +192,7 @@ const ReviewPage = {
   async confirmExit() {
     const confirmed = await Modal.confirm(
       'Çalışmayı Bitir',
-      `${this.currentIndex} / ${this.words.length} kelime tamamlandı.\nÇıkmak istediğinize emin misiniz?`
+      `${this.currentIndex} / ${this.words.length} kelime tamamlandı. Çıkmak istiyor musunuz?`
     );
     if (confirmed) {
       await this.endSession();
@@ -278,25 +202,20 @@ const ReviewPage = {
 
   async endSession() {
     if (!this.sessionId) return;
-    
     const duration = Math.round((Date.now() - this.startTime) / 1000);
     try {
       await API.completeSession(this.sessionId, {
         cards_studied: this.results.correct + this.results.wrong,
         correct_answers: this.results.correct,
         wrong_answers: this.results.wrong,
-        skipped_cards: this.results.skipped,
         duration_seconds: duration
       });
-    } catch (err) {
-      console.warn('Session tamamlama hatası:', err);
-    }
+    } catch { /* Sessiz */ }
   },
 
   async showResults(container) {
     if (!container) container = document.getElementById('main-content');
 
-    // Session'ı tamamla
     await this.endSession();
 
     const total = this.results.correct + this.results.wrong;
@@ -306,17 +225,10 @@ const ReviewPage = {
     const seconds = duration % 60;
 
     let emoji = '🎉';
-    let message = 'Harika iş çıkardın!';
-    if (accuracy < 50) { 
-      emoji = '💪'; 
-      message = 'Pratik yapmaya devam et!'; 
-    } else if (accuracy < 80) { 
-      emoji = '👍'; 
-      message = 'İyi gidiyorsun!'; 
-    } else if (accuracy === 100) { 
-      emoji = '🏆'; 
-      message = 'Mükemmel! Tam isabet!'; 
-    }
+    let message = 'Harika!';
+    if (accuracy < 50) { emoji = '💪'; message = 'Pratik yapmaya devam!'; }
+    else if (accuracy < 80) { emoji = '👍'; message = 'İyi gidiyorsun!'; }
+    else if (accuracy === 100) { emoji = '🏆'; message = 'Mükemmel!'; }
 
     container.innerHTML = `
       <div class="page review-page">
@@ -331,7 +243,7 @@ const ReviewPage = {
             </div>
             <div class="result-item result-wrong">
               <span class="result-value">${this.results.wrong}</span>
-              <span class="result-label">Tekrar Edilecek</span>
+              <span class="result-label">Hatırlanmayan</span>
             </div>
             <div class="result-item result-accuracy">
               <span class="result-value">${accuracy}%</span>
@@ -347,14 +259,8 @@ const ReviewPage = {
             <p class="skipped-note">${this.results.skipped} kelime atlandı</p>
           ` : ''}
 
-          ${accuracy < 50 ? `
-            <div class="encouragement-note">
-              💡 İpucu: Zorlandığın kelimeler için örnek cümleleri inceleyebilirsin.
-            </div>
-          ` : ''}
-
           <div class="results-actions">
-            <a href="#/dashboard" class="btn btn-primary btn-lg">🏠 Ana Sayfaya Dön</a>
+            <a href="#/dashboard" class="btn btn-primary btn-lg">🏠 Ana Sayfa</a>
             <button class="btn btn-secondary btn-lg" onclick="ReviewPage.render(document.getElementById('main-content'))">
               🔄 Tekrar Çalış
             </button>
@@ -362,14 +268,7 @@ const ReviewPage = {
         </div>
       </div>
     `;
-
-    // Sonuç ekranı animasyonu
-    const resultsEl = document.querySelector('.review-results');
-    if (resultsEl) {
-      resultsEl.classList.add('results-enter');
-    }
   }
 };
 
-// Router'a kaydet
 Router.register('/review', (container) => ReviewPage.render(container));
