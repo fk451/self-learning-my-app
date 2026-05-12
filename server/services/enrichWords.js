@@ -73,6 +73,15 @@ async function enrichWordsBatch(words) {
      LIMIT 1000`, // Toplam limit, her sense için ayrı limit uygulanacak
     [senseIds]
   );
+  
+  // 6. Kelime bazlı örnek cümleleri çek
+	const [sentenceExamples] = await db.query(
+	  `SELECT id, user_word_id, sentence_text, display_order
+	   FROM word_sentence_examples 
+	   WHERE user_word_id IN (?)
+	   ORDER BY display_order`,
+	  [wordIds]
+	);
 
   // ---- Verileri Map yapılarına dönüştür ----
 
@@ -143,6 +152,16 @@ async function enrichWordsBatch(words) {
     });
   }
 
+
+	// Sentence examples map: user_word_id -> [sentence_text, ...]
+	const sentenceExampleMap = new Map();
+	for (const se of sentenceExamples) {
+	  if (!sentenceExampleMap.has(se.user_word_id)) {
+		sentenceExampleMap.set(se.user_word_id, []);
+	  }
+	  sentenceExampleMap.get(se.user_word_id).push(se.sentence_text);
+	}
+
   // ---- Kelimelere dağıt ----
   for (const word of words) {
     word.sections = sectionMap.get(word.id) || [];
@@ -160,6 +179,12 @@ async function enrichWordsBatch(words) {
       word.primary_translation = firstSense.translations[0] || '';
       word.primary_definition = firstSense.definition || '';
     }
+	
+	
+	// örnek cümleler
+	  word.sentence_examples = sentenceExampleMap.get(word.id) || [];
+
+	
   }
 }
 
