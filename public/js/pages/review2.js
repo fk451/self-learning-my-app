@@ -22,6 +22,7 @@ const ReviewPage = {
     try {
       const data = await API.getDueWords(this.sessionType);
       if (!data || !data.words || data.words.length === 0) {
+		  console.log(data);
         container.innerHTML = `
           <div class="page review-page">
             <div class="empty-state">

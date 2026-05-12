@@ -107,6 +107,7 @@ const ReviewPage = {
       pos_groups: word.pos_groups || [],
       primary_translation: word.primary_translation || '',
       primary_definition: word.primary_definition || '',
+      sentence_examples: word.sentence_examples || '',
       
       // İstatistikler
       total_reviews: word.total_reviews || 0,
